@@ -1,25 +1,25 @@
-import { QueryClient, useQuery } from "@tanstack/react-query"
-import { toast } from "react-hot-toast"
-import { AiOutlineClose } from "react-icons/ai"
-import { HiOutlineArrowNarrowLeft } from "react-icons/hi"
-import { RouterOutput } from "../../server/trpc"
-import { CurrentItem } from "../../types/types"
-import { trpc } from "../../utils/trpc"
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { AiOutlineClose } from "react-icons/ai";
+import { HiOutlineArrowNarrowLeft } from "react-icons/hi";
+import { RouterOutput } from "../../server/trpc";
+import { CurrentItem } from "../../types/types";
+import { trpc } from "../../utils/trpc";
 
 interface Props {
-  queryClient: QueryClient
+  queryClient: QueryClient;
 }
 
 export default function Details({ queryClient }: Props) {
   const { data: currentItem } = useQuery<CurrentItem>(
     ["currentItem"],
     () => queryClient.getQueryData(["currentItem"]) as CurrentItem
-  )
+  );
 
   const { mutate } = trpc.list.createOrUpdate.useMutation({
     onSuccess: (data) => {
-      toast.success("Added to the list")
-      goBack()
+      toast.success("Added to the list");
+      goBack();
       queryClient.setQueryData(
         [
           ["list", "read"],
@@ -28,17 +28,17 @@ export default function Details({ queryClient }: Props) {
           },
         ],
         data
-      )
+      );
     },
-  })
+  });
 
   function goBack(): void {
-    queryClient.setQueryData(["currentMenu"], "ActiveList")
-    queryClient.setQueryData(["currentItem"], "")
+    queryClient.setQueryData(["currentMenu"], "ActiveList");
+    queryClient.setQueryData(["currentItem"], "");
   }
 
   function addToList() {
-    if (!currentItem) return
+    if (!currentItem) return;
 
     const list: RouterOutput["list"]["read"] | undefined =
       queryClient.getQueryData([
@@ -46,17 +46,17 @@ export default function Details({ queryClient }: Props) {
         {
           type: "query",
         },
-      ])
+      ]);
 
     if (list?.listItems.find((i) => i.item.id === currentItem.itemId)) {
-      toast.error("Item already in the list")
-      return
+      toast.error("Item already in the list");
+      return;
     }
 
     mutate({
       itemID: { id: currentItem.itemId },
       listID: list?.id,
-    })
+    });
   }
 
   return (
@@ -122,5 +122,5 @@ export default function Details({ queryClient }: Props) {
         </div>
       )}
     </section>
-  )
+  );
 }

@@ -1,31 +1,31 @@
-import CategorySelect from "./CategorySelect"
-import { Dispatch, SetStateAction, useState } from "react"
-import { trpc } from "../../utils/trpc"
-import { useForm, SubmitHandler } from "react-hook-form"
-import { toast } from "react-hot-toast"
-import { QueryClient, useQueryClient } from "@tanstack/react-query"
-import { RouterOutput } from "../../server/trpc"
-import { AiOutlineClose } from "react-icons/ai"
+import CategorySelect from "./CategorySelect";
+import { Dispatch, SetStateAction, useState } from "react";
+import { trpc } from "../../utils/trpc";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { RouterOutput } from "../../server/trpc";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface Props {
-  queryClient: QueryClient
+  queryClient: QueryClient;
 }
 
 interface FormData {
-  name: string
-  note: string
-  image: string
+  name: string;
+  note: string;
+  image: string;
 }
 
 export default function AddItem({ queryClient }: Props) {
   const [categoryName, setCategoryName] = useState<string | undefined>(
     undefined
-  )
-  const { register, handleSubmit, reset } = useForm<FormData>()
+  );
+  const { register, handleSubmit, reset } = useForm<FormData>();
   const { mutate, isLoading } = trpc.item.create.useMutation({
     onSuccess: (data) => {
-      toast.success("Successfully created new item")
-      reset({ name: "", note: "", image: "" })
+      toast.success("Successfully created new item");
+      reset({ name: "", note: "", image: "" });
       queryClient.setQueryData(
         [
           ["item", "all"],
@@ -34,14 +34,14 @@ export default function AddItem({ queryClient }: Props) {
           },
         ],
         (oldData: RouterOutput["item"]["all"] | undefined) => {
-          let newItem = { ...data, category: data.category || undefined }
-          delete newItem.category
+          let newItem = { ...data, category: data.category || undefined };
+          delete newItem.category;
           const newCatItem: RouterOutput["item"]["all"][number] = {
             id: data.categoryId!,
             name: data.category?.name!,
             userId: data.userId,
             items: [newItem],
-          }
+          };
 
           if (oldData === undefined) {
             queryClient.setQueryData(
@@ -52,17 +52,17 @@ export default function AddItem({ queryClient }: Props) {
                 },
               ],
               [{ value: newCatItem.name, label: newCatItem.name }]
-            )
-            return [newCatItem]
+            );
+            return [newCatItem];
           }
 
-          const itemsList = oldData.find((i) => i.name === data.category?.name)
+          const itemsList = oldData.find((i) => i.name === data.category?.name);
 
           if (itemsList === undefined) {
             const categories = oldData.map((d) => ({
               label: d.name,
               name: d.name,
-            }))
+            }));
             queryClient.setQueryData(
               [
                 ["item", "allCategories"],
@@ -74,30 +74,30 @@ export default function AddItem({ queryClient }: Props) {
                 ...categories,
                 { value: newCatItem.name, label: newCatItem.name },
               ]
-            )
-            return [...oldData, newCatItem]
+            );
+            return [...oldData, newCatItem];
           }
 
           return oldData.map((d) =>
             d.id === itemsList.id
               ? { ...itemsList, items: [...itemsList.items, newItem] }
               : d
-          )
+          );
         }
-      )
+      );
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error(error.message);
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     if (categoryName === undefined) {
-      toast.error("Category is required")
-      return
+      toast.error("Category is required");
+      return;
     }
-    mutate({ ...data, categoryName })
-  }
+    mutate({ ...data, categoryName });
+  };
 
   return (
     <section className="h-full pb-64 overflow-scroll bg-white pt-14 px-14 hideScrollbar">
@@ -182,5 +182,5 @@ export default function AddItem({ queryClient }: Props) {
         </div>
       </form>
     </section>
-  )
+  );
 }
