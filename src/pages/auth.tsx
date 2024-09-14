@@ -1,9 +1,9 @@
-import Image from "next/image"
-import SocialLogin from "../components/layouts/SocialLogin"
-import { useState } from "react"
+import Image from "next/image";
+import SocialLogin from "../components/layouts/SocialLogin";
+import { useState } from "react";
 
 export default function Auth() {
-  const [isRegister, setIsRegister] = useState<boolean>(false)
+  const [isRegister, setIsRegister] = useState<boolean>(false);
 
   return (
     <section className="flex items-center justify-center h-screen bg-white">
@@ -90,5 +90,5 @@ export default function Auth() {
         )}
       </form>
     </section>
-  )
+  );
 }

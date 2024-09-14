@@ -1,10 +1,10 @@
-import { QueryClient } from "@tanstack/react-query"
-import { AiOutlinePlus } from "react-icons/ai"
-import type { RouterOutput } from "../../server/trpc"
+import { QueryClient } from "@tanstack/react-query";
+import { AiOutlinePlus } from "react-icons/ai";
+import type { RouterOutput } from "../../server/trpc";
 
 interface Props {
-  item: RouterOutput["item"]["all"][number]
-  queryClient: QueryClient
+  item: RouterOutput["item"]["all"][number];
+  queryClient: QueryClient;
 }
 
 export default function CategoryItems({ item, queryClient }: Props) {
@@ -25,9 +25,9 @@ export default function CategoryItems({ item, queryClient }: Props) {
                 note: i.note,
                 image: i.image,
                 show: true,
-              })
-              queryClient.setQueryData(["currentMenu"], "Details")
-              queryClient.setQueryData(["showMenu"], true)
+              });
+              queryClient.setQueryData(["currentMenu"], "Details");
+              queryClient.setQueryData(["showMenu"], true);
             }}
             className="h-fit leading-8 text-left flex gap-x-4 justify-between w-full px-6 py-[1.3rem] rounded-2xl bg-white shadow1 text-black text-2xl font-semibold"
           >
@@ -36,5 +36,5 @@ export default function CategoryItems({ item, queryClient }: Props) {
         ))}
       </div>
     </div>
-  )
+  );
 }

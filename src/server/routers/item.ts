@@ -102,6 +102,20 @@ const itemRouter = router({
   }),
 
   delete: protectedProcedure
+    // .listItems: {
+    //   select: {
+    //     item: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         category: true,
+    //       },
+    //     },
+    //     id: true,
+    //     quantity: true,
+    //     isDone: true,
+    //   },
+    // },
     .input(z.string())
     .mutation(async ({ ctx: { prisma }, input: itemId }) => {
       try {
